@@ -210,13 +210,7 @@ body {
 
 /* Charts */
 .chart-container,
-.card {
-  height: 300px;
-  background: var(--bg-card);
-  border-radius: 16px;
-  box-shadow: var(--shadow-md);
-  padding: 24px;
-}
+
 
 canvas {
   max-width: 100%;
@@ -244,12 +238,7 @@ canvas {
   gap: 24px;
 }
 
-.card {
-  background: var(--bg-card);
-  border-radius: 16px;
-  padding: 24px;
-  box-shadow: var(--shadow-md);
-}
+
 
 .card-header {
   display: flex;

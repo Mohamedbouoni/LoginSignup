@@ -2,7 +2,8 @@ import PropTypes from 'prop-types';
 import { Navigate } from 'react-router-dom';
 
 function ProtectedRoute({ element, isAuthenticated }) {
-  return isAuthenticated ? element : <Navigate to="/login" />;
+  const isAuth = localStorage.getItem('isAuthenticated') === 'true';
+  return isAuth ? element : <Navigate to="/login" />;
 }
 
 ProtectedRoute.propTypes = {

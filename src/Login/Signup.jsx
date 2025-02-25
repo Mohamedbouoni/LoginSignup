@@ -1,72 +1,11 @@
-<<<<<<< HEAD
-import React, { useState } from 'react';
-import './Login.css';
-
-const Signup = () => {
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const [isPasswordMatch, setIsPasswordMatch] = useState(true);
-
-    const handlePasswordChange = (e) => {
-        setPassword(e.target.value);
-        setIsPasswordMatch(e.target.value === confirmPassword);
-    };
-
-    const handleConfirmPasswordChange = (e) => {
-        setConfirmPassword(e.target.value);
-        setIsPasswordMatch(e.target.value === password);
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-    };
-
-    return (
-        <div className='container'>
-            <div className='card'>
-                <h1>Signup</h1>
-                <form onSubmit={handleSubmit} className='form'>
-                    <label>Full Name</label>
-                    <input className='fullname' type='text' placeholder='Full Name' required />
-                    
-                    <label>Username</label>
-                    <input className='username' type='text' placeholder='Username' required />
-                    
-                    <label>Password</label>
-                    <input
-                        className='password'
-                        type='password'
-                        placeholder='Password'
-                        value={password}
-                        onChange={handlePasswordChange}
-                        required
-                    />
-                    
-                    <label>Confirm Password</label>
-                    <input
-                        className='confirm-password'
-                        type='password'
-                        placeholder='Confirm Password'
-                        value={confirmPassword}
-                        onChange={handleConfirmPasswordChange}
-                        required
-                    />
-                    {!isPasswordMatch && (
-                        <p className='error'>Passwords do not match</p>
-                    )}
-                    <button type='submit' disabled={!isPasswordMatch}>Signup</button>
-                </form>
-            </div>
-        </div>
-    );
-=======
 import { useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 import './Login.css';
 
 const Signup = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({ fullname: '', username: '', password: '', confirmPassword: '' });
 
   const handleChange = (e) => {
@@ -86,7 +25,21 @@ const Signup = () => {
       return;
     }
 
+    // Check if the username already exists
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+    const existingUser = users.find(user => user.username === formData.username);
+    if (existingUser) {
+      toast.error('Username already exists!');
+      return;
+    }
+
+    // Save the new user to localStorage
+    const newUser = { fullname: formData.fullname, username: formData.username, password: formData.password };
+    users.push(newUser);
+    localStorage.setItem('users', JSON.stringify(users));
+
     toast.success('Account created successfully!');
+    navigate('/login'); // Redirect to the login page
   };
 
   return (
@@ -116,7 +69,6 @@ const Signup = () => {
       </div>
     </div>
   );
->>>>>>> 6cbdc18 (Initial commit: Login and Signup components yessin verssion)
 };
 
 export default Signup;
