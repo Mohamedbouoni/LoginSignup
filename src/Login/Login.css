@@ -13,6 +13,10 @@ body{
 }
 .card{
     width: 400px;
+<<<<<<< HEAD
+=======
+    height: 100vh;
+>>>>>>> 6cbdc18 (Initial commit: Login and Signup components yessin verssion)
     background: #fff;
     padding: 20px;
     border-radius: 10px;
