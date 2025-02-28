@@ -12,26 +12,35 @@ const Login = ({ setIsAuthenticated }) => {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (!formData.username || !formData.password) {
       toast.error('Username and password are required!');
       return;
     }
-
-    // Retrieve users from localStorage
-    const users = JSON.parse(localStorage.getItem('users')) || [];
-    const user = users.find(user => user.username === formData.username && user.password === formData.password);
-
-    if (user) {
-      localStorage.setItem('isAuthenticated', 'true');
-      setIsAuthenticated(true);
-      toast.success('Login successful!');
-      navigate('/dashboard'); // Redirect to the dashboard
-    } else {
-      toast.error('Invalid credentials!');
+  
+    try {
+      const response = await fetch('http://localhost:5000/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: formData.username,
+          password: formData.password,
+        }),
+      });
+  
+      const data = await response.json();
+      if (response.ok) {
+        localStorage.setItem('isAuthenticated', 'true');
+        setIsAuthenticated(true);
+        toast.success('Login successful!');
+        navigate('/dashboard');
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error('Server error');
     }
   };
 

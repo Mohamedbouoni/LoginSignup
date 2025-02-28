@@ -12,34 +12,40 @@ const Signup = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (!formData.fullname || !formData.username || !formData.password || !formData.confirmPassword) {
       toast.error('All fields are required!');
       return;
     }
-
+  
     if (formData.password !== formData.confirmPassword) {
       toast.error('Passwords do not match!');
       return;
     }
-
-    // Check if the username already exists
-    const users = JSON.parse(localStorage.getItem('users')) || [];
-    const existingUser = users.find(user => user.username === formData.username);
-    if (existingUser) {
-      toast.error('Username already exists!');
-      return;
+  
+    try {
+      const response = await fetch('http://localhost:5000/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          fullname: formData.fullname,
+          username: formData.username,
+          password: formData.password,
+        }),
+      });
+  
+      const data = await response.json();
+      if (response.ok) {
+        toast.success('Account created successfully!');
+        navigate('/login');
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error('Server error');
     }
-
-    // Save the new user to localStorage
-    const newUser = { fullname: formData.fullname, username: formData.username, password: formData.password };
-    users.push(newUser);
-    localStorage.setItem('users', JSON.stringify(users));
-
-    toast.success('Account created successfully!');
-    navigate('/login'); // Redirect to the login page
   };
 
   return (
