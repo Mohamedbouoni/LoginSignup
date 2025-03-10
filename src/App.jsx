@@ -5,7 +5,13 @@ import Signup from './Login/Signup';
 import Dashboard from './dashboard/Dashboard';
 import ProtectedRoute from './helper/ProtectedRoute';
 import './App.css';
-
+import UserProfile from './pages/UserProfile';
+import Candidate from './styles/Candidate';
+import Departments from './pages/Departments';
+import Employees from './pages/Employees';
+import LeaveRequets from './pages/LeaveRequets';
+import Recruitment from './pages/Recruitment';
+import Settings from './pages/Settings';
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -26,26 +32,34 @@ function App() {
       <div className="App">
         <Routes>
           {/* Public routes */}
-          <Route 
-            path="/login" 
-            element={isAuthenticated ? <Navigate to="/dashboard" /> : <Login setIsAuthenticated={setIsAuthenticated} />} 
+          <Route
+            path="/login"
+            element={isAuthenticated ? <Navigate to="/dashboard" /> : <Login setIsAuthenticated={setIsAuthenticated} />}
           />
-          <Route 
-            path="/signup" 
-            element={isAuthenticated ? <Navigate to="/dashboard" /> : <Signup />} 
+          <Route
+            path="/signup"
+            element={isAuthenticated ? <Navigate to="/dashboard" /> : <Signup />}
           />
 
           {/* Protected dashboard */}
-          <Route 
-            path="/dashboard" 
-            element={<ProtectedRoute isAuthenticated={isAuthenticated} element={<Dashboard setIsAuthenticated={setIsAuthenticated} />} />} 
+          <Route
+            path="/dashboard"
+            element={<ProtectedRoute isAuthenticated={isAuthenticated} element={<Dashboard setIsAuthenticated={setIsAuthenticated} />} />}
           />
+
+          {/* Dynamic user profile route */}
+          <Route path="/user-profile" element={<UserProfile />} />
+          <Route path="/employees" element={<Employees />} />
+        <Route path="/departments" element={<Departments />} />
+        <Route path="/leave-requests" element={<LeaveRequets />} />
+        <Route path="/recruitment" element={<Recruitment />} />
+        <Route path="/settings" element={<Settings />} />
 
           {/* Catch all unmatched routes */}
           <Route path="*" element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} />} />
 
           {/* Default route */}
-          <Route path="/" element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} />} />
+          <Route path="/" element={<Candidate/>} />
         </Routes>
       </div>
     </Router>

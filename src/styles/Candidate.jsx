@@ -1,17 +1,32 @@
-import "./candidate.css"; // Ensure this file is in the same folder
+import "./Candidate.css"; // Ensure this file is in the same folder
 
 export default function Candidate() {
   return (
     <div className="home-container">
+      {/* Navbar */}
+      <div className="navbar">
+        <div className="logo">Horizon</div>
+        <div className="nav-links">
+          <a href="#hero">Home</a>
+          <a href="#job-listings">Jobs</a>
+          <a href="#">Contact</a>
+          <a href="Login">Login</a>
+          <a href="Signup">Sign Up</a>
+        </div>
+      </div>
+
       {/* Hero Section */}
-      <div className="hero">
-        <h1>Find Your Dream Job</h1>
-        <p>Apply to top companies and take the next step in your career</p>
-        <button className="hero-btn">Browse Jobs</button>
+      <div id="hero" className="hero">
+        <h1 className="hero-title">Unlock Your Future</h1>
+        <p className="hero-subtitle">Discover thousands of job opportunities and take control of your career</p>
+        <div className="hero-buttons">
+          <button className="hero-btn primary">Browse Jobs</button>
+          <button className="hero-btn secondary">Upload Resume</button>
+        </div>
       </div>
 
       {/* Job Listings */}
-      <div className="job-listings">
+      <div id="job-listings" className="job-listings">
         <h2>Latest Job Openings</h2>
         <div className="job-card">
           <h3>Frontend Developer</h3>
@@ -32,9 +47,6 @@ export default function Candidate() {
           <button className="apply-btn">Apply Now</button>
         </div>
       </div>
-
-      {/* Apply Now Section */}
-     
     </div>
   );
 }

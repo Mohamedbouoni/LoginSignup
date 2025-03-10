@@ -1,44 +1,68 @@
+html {
+  scroll-behavior: smooth;
+}
+
 /* General Styles */
 .home-container {
     font-family: 'Arial', sans-serif;
-    background: #121212;
+    background: #ffffff;
     color: #ffffff;
     text-align: center;
     padding: 20px;
+    margin: 10px;
+    min-width: 1300px;
+    border-radius: 20px;
+
   }
   
   /* Hero Section */
   .hero {
-    background: linear-gradient(to right, #007BFF, #0056b3);
-    padding: 50px 20px;
-    color: white;
-    border-radius: 10px;
+    background: linear-gradient(135deg, #007BFF, #0056b3);
+    padding: 60px 20px;
+    border-radius: 15px;
+    text-align: center;
   }
   
-  .hero h1 {
-    font-size: 36px;
-    margin-bottom: 10px;
+  .hero-title {
+    font-size: 48px;
+    font-weight: 800;
+    margin-bottom: 20px;
   }
   
-  .hero p {
-    font-size: 18px;
+  .hero-subtitle {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 30px;
+  }
+  
+  .hero-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
   }
   
   .hero-btn {
-    background: black;
-    color: #007BFF;
-    border: 2px solid #007BFF;
-    padding: 12px 20px;
-    font-size: 16px;
-    border-radius: 5px;
+    padding: 15px 30px;
+    font-size: 18px;
+    font-weight: 700;
+    border-radius: 10px;
     cursor: pointer;
-    margin-top: 10px;
     transition: 0.3s;
   }
   
+  .hero-btn.primary {
+    background: #ffd700;
+    color: #121212;
+  }
+  
+  .hero-btn.secondary {
+    background: #ffffff;
+    color: #007BFF;
+  }
+  
   .hero-btn:hover {
-    background: #007BFF;
-    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
   }
   
   /* Job Listings */
@@ -134,5 +158,32 @@
     .apply-form input {
       width: 90%;
     }
+  }
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background: #007BFF;
+    border-radius: 10px;
+    margin: 10px;
+  }
+  
+  .navbar .logo {
+    font-size: 24;
+    font-weight: bold;
+    color: #ffd700;
+  }
+  
+  .nav-links a {
+    color: #ffffff;
+    text-decoration: none;
+    margin: 0 15px;
+    font-size: 16px;
+    transition: 0.3s;
+  }
+  
+  .nav-links a:hover {
+    color: #ffd700;
   }
   

@@ -1,19 +1,84 @@
 import { Link, useNavigate } from 'react-router-dom';
+import { toast ,ToastContainer} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import UserProfile from '../pages/UserProfile';
 import './Dashboard.css';
 import PropTypes from 'prop-types';
 import './style.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTachometerAlt, faNewspaper, faFileAlt, faBuilding, faUser, faCog, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { faTachometerAlt, faUsers, faBuilding, faCalendarAlt, faUser, faCog, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 
 const Dashboard = ({ setIsAuthenticated }) => {
   const [navOpen, setNavOpen] = useState(true);
+  const [userInfo, setUserInfo] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [user,setUser] = useState(null);
+  
+  useEffect(() => {
+    const userId = localStorage.getItem("userId");
+    console.log(userId)
+
+    if (userId) {
+        const fetchUserData = async () => {
+            try {
+                const response = await fetch(`http://localhost:5000/api/user/${userId}`);
+                const data = await response.json();
+                setUser(data);
+            } catch (error) {
+                console.error("Error fetching user data:", error);
+            }
+        };
+
+        fetchUserData();
+    }
+}, []);
+    
 
   const toggleNav = () => {
     setNavOpen(!navOpen);
   };
   const navigate = useNavigate();
 
+  const fetchUserInfo = async () => {
+    const userId = localStorage.getItem("userId");
+    console.log('User ID from localStorage:', userId); // Log userId to check
+  
+    if (!userId) {
+      console.error('No user ID found');
+      return;
+    }
+  
+    try {
+      const response = await fetch(`/api/user/${userId}`);
+      
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+  
+      const data = await response.json();
+      setUserInfo(data);
+      setShowModal(true);
+    } catch (error) {
+      console.error("Error fetching user info:", error);
+    }
+  };
+  const [showProfile, setShowProfile] = useState(false);
+
+  const handleIconClick = () => {
+    navigate('/user-profile');
+  };
+  
+  useEffect(() => {
+    const isAuthenticated = localStorage.getItem('isAuthenticated');
+    if (isAuthenticated) {
+      toast.success('Login successfully!', { position: "top-right", autoClose: 3000});
+      
+    }
+  }, []);
+  
+
+  
   const handleLogout = () => {
     localStorage.removeItem('isAuthenticated');
     setIsAuthenticated(false);
@@ -23,6 +88,7 @@ const Dashboard = ({ setIsAuthenticated }) => {
   return (
     <>
       <header>
+      
         <div className="logosec">
           <div className="logo">HORIZON</div>
           <img
@@ -35,6 +101,7 @@ const Dashboard = ({ setIsAuthenticated }) => {
         </div>
 
         <div className="searchbar">
+        <ToastContainer />
           <input type="text" placeholder="Search" />
           <div className="searchbtn">
             <img
@@ -53,43 +120,42 @@ const Dashboard = ({ setIsAuthenticated }) => {
             alt="message-icon"
           />
           <div className="dp">
-            <img
-              src="https://media.geeksforgeeks.org/wp-content/uploads/20221210180014/profile-removebg-preview.png"
-              className="dpicn"
-              alt="dp"
-            />
+
+            <Link to="/user-profile">
+            {user?.image && <img src={`http://localhost:5000/${user.image}`} alt="Profile" className="profile-img" />}
+            </Link>
+            
           </div>
+          {showModal && <UserProfile user={userInfo} onClose={() => setShowModal(false)} />}
         </div>
       </header>
 
       <div className="main-container">
 
-      <div className={`navcontainer ${navOpen ? '' : 'navclose'}`}>
-      <nav className="nav">
-        <div className="nav-upper-options">
-          {['Dashboard', 'Articles', 'Report', 'Institution', 'Profile', 'Settings', 'Logout'].map((item, index) => {
-            let icon;
-            switch (index) {
-              case 0: icon = faTachometerAlt; break;
-              case 1: icon = faNewspaper; break;
-              case 2: icon = faFileAlt; break;
-              case 3: icon = faBuilding; break;
-              case 4: icon = faUser; break;
-              case 5: icon = faCog; break;
-              case 6: icon = faSignOutAlt; break;
-              default: icon = faTachometerAlt;
-            }
-
-            return (
-              <div className={`nav-option option${index + 1}`} key={index}>
-                <FontAwesomeIcon icon={icon} className="nav-img" />
-                <h3>{item}</h3>
+        <div className={`navcontainer ${navOpen ? '' : 'navclose'}`}>
+        <nav className="nav">
+          <div className="nav-upper-options">
+            {[
+              { name: 'Dashboard', icon: faTachometerAlt, route: '/' },
+              { name: 'Employees', icon: faUsers, route: '/employees' },
+              { name: 'Departments', icon: faBuilding, route: '/departments' },
+              { name: 'Leave Requests', icon: faCalendarAlt, route: '/leave-requests' },
+              { name: 'Recruitment', icon: faUser, route: '/recruitment' },
+              { name: 'Settings', icon: faCog, route: '/settings' },
+              { name: 'Logout', icon: faSignOutAlt, route: '/login', onClick: handleLogout }
+            ].map((item, index) => (
+              <div
+                className={`nav-option option${index + 1}`}
+                key={index}
+                onClick={item.onClick ? item.onClick : () => navigate(item.route)}
+              >
+                <FontAwesomeIcon icon={item.icon} className="nav-img" />
+                <h3>{item.name}</h3>
               </div>
-            );
-          })}
+            ))}
+          </div>
+        </nav>
         </div>
-      </nav>
-    </div>
 
         <div className="main">
           <div className="searchbar2">
@@ -130,7 +196,8 @@ const Dashboard = ({ setIsAuthenticated }) => {
             <div className="report-body">
               <div className="report-topic-heading">
                 {['Article', 'Views', 'Comments', 'Status'].map((heading, index) => (
-                  <h3 className="t-op" key={index}>{heading}</h3>
+                  <h3 className="t-op" key={index}
+                  >{heading}</h3>
                 ))}
               </div>
               <div className="items">

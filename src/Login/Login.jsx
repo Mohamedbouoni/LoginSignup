@@ -8,18 +8,26 @@ import PropTypes from 'prop-types';
 const Login = ({ setIsAuthenticated }) => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ username: '', password: '' });
+  const [loading, setLoading] = useState(false);  // Added loading state
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     if (!formData.username || !formData.password) {
       toast.error('Username and password are required!');
       return;
     }
-  
+
+    setLoading(true);  // Set loading to true when the request is sent
+
     try {
       const response = await fetch('http://localhost:5000/api/auth/login', {
         method: 'POST',
@@ -29,18 +37,22 @@ const Login = ({ setIsAuthenticated }) => {
           password: formData.password,
         }),
       });
-  
+
       const data = await response.json();
+      
       if (response.ok) {
         localStorage.setItem('isAuthenticated', 'true');
+        localStorage.setItem('userId', data.user._id); // Save user ID
         setIsAuthenticated(true);
         toast.success('Login successful!');
-        navigate('/dashboard');
+        navigate('/dashboard');  // Redirect to dashboard after login
       } else {
-        toast.error(data.message);
+        toast.error(data.message || 'Login failed');
       }
     } catch (error) {
       toast.error('Server error');
+    } finally {
+      setLoading(false);  // Set loading to false when the request completes
     }
   };
 
@@ -51,12 +63,26 @@ const Login = ({ setIsAuthenticated }) => {
         <h1>Login</h1>
         <form onSubmit={handleSubmit} className="auth-form">
           <label>Username</label>
-          <input type="text" name="username" placeholder="Username" onChange={handleChange} />
+          <input
+            type="text"
+            name="username"
+            placeholder="Username"
+            onChange={handleChange}
+            value={formData.username}
+          />
 
           <label>Password</label>
-          <input type="password" name="password" placeholder="Password" onChange={handleChange} />
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            onChange={handleChange}
+            value={formData.password}
+          />
 
-          <button type="submit">Login</button>
+          <button type="submit" disabled={loading}>
+            {loading ? 'Logging in...' : 'Login'}
+          </button>
 
           <p className="signup-link">
             Dont have an account? <Link to="/signup">Go to Signup</Link>
