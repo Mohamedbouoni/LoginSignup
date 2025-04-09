@@ -1,41 +1,43 @@
 import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import './UserProfile.css';
-import { Link } from 'react-router-dom';
 
 const UserProfile = () => {
     const [user, setUser] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const userId = localStorage.getItem("userId");
-        console.log(userId)
-
         if (userId) {
-            const fetchUserData = async () => {
-                try {
-                    const response = await fetch(`http://localhost:5000/api/user/${userId}`);
-                    const data = await response.json();
-                    setUser(data);
-                } catch (error) {
-                    console.error("Error fetching user data:", error);
-                }
-            };
-
-            fetchUserData();
+            fetch(`http://localhost:5000/api/user/${userId}`)
+                .then((res) => res.json())
+                .then((data) => setUser(data))
+                .catch((error) => console.error("Error fetching user data:", error));
         }
     }, []);
+    const handleLogout = () => {
+        localStorage.removeItem('isAuthenticated');
+        setIsAuthenticated(false);
+        navigate('/login');
+      };
 
     if (!user) return <div>Loading...</div>;
 
     return (
         <div className='card-profile'>
-            <Link to='/dashboard'><h2>Dashboard</h2></Link>
-            
+            <h2>User Profile</h2>
             <div className='Profile'>
-                <h1>User Profile</h1>
                 {user.image && <img src={`http://localhost:5000/${user.image}`} alt="Profile" className="profile-image" />}
                 <p><strong>Full Name:</strong> {user.fullname}</p>
                 <p><strong>Username:</strong> {user.username}</p>
-                <p><strong>Password:</strong> {user.password}</p>
+                <p><strong>password:</strong> {user.password}</p>
+                <p><strong>Role:</strong> {user.role}</p>
+
+                <div className="profile-actions">
+                    <button onClick={() => navigate(`/edit-profile/${user._id}`)}>Edit Profile</button>
+                    <button onClick={() => navigate(`/change-password/${user._id}`)}>Change Password</button>
+                    <button onClick={handleLogout}>Logout</button>
+                </div>
             </div>
         </div>
     );

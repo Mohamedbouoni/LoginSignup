@@ -20,16 +20,16 @@ const Login = ({ setIsAuthenticated }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (!formData.username || !formData.password) {
       toast.error('Username and password are required!');
       return;
     }
-
-    setLoading(true);  // Set loading to true when the request is sent
-
+  
+    setLoading(true);
+  
     try {
-      const response = await fetch('http://localhost:5000/api/auth/login', {
+      const response = await fetch('http://localhost:5000/api/user/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -37,24 +37,26 @@ const Login = ({ setIsAuthenticated }) => {
           password: formData.password,
         }),
       });
-
       const data = await response.json();
-      
+  
       if (response.ok) {
         localStorage.setItem('isAuthenticated', 'true');
-        localStorage.setItem('userId', data.user._id); // Save user ID
+        localStorage.setItem('userId', data.user._id);
+        localStorage.setItem('token', data.token);  // Store token
         setIsAuthenticated(true);
         toast.success('Login successful!');
-        navigate('/dashboard');  // Redirect to dashboard after login
+        navigate('/dashboard');
       } else {
-        toast.error(data.message || 'Login failed');
+        toast.error(data.message || 'Invalid username or password');
       }
     } catch (error) {
-      toast.error('Server error');
+      toast.error('Network error, please try again later.');
+      console.error('Login error:', error);
     } finally {
-      setLoading(false);  // Set loading to false when the request completes
+      setLoading(false);
     }
   };
+  
 
   return (
     <div className="container">

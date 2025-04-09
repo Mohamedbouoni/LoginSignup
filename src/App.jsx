@@ -12,6 +12,9 @@ import Employees from './pages/Employees';
 import LeaveRequets from './pages/LeaveRequets';
 import Recruitment from './pages/Recruitment';
 import Settings from './pages/Settings';
+import Countuser from './hooks/Countuser';
+import EditProfile from './hooks/EditProfile';
+import ChangePassword from './hooks/ChangePassword';
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -48,7 +51,9 @@ function App() {
           />
 
           {/* Dynamic user profile route */}
-          <Route path="/user-profile" element={<UserProfile />} />
+          <Route path="/user-profile" element={<UserProfile />/*,<Countuser/>*/} />
+          <Route path="/edit-profile/:id" element={<ProtectedRoute isAuthenticated={isAuthenticated} element={<EditProfile setIsAuthenticated={setIsAuthenticated} />} />} />
+          <Route path='/change-password/:id' element={<ProtectedRoute isAuthenticated={isAuthenticated} element={<EditProfile setIsAuthenticated={setIsAuthenticated} />} />} ></Route>
           <Route path="/employees" element={<Employees />} />
         <Route path="/departments" element={<Departments />} />
         <Route path="/leave-requests" element={<LeaveRequets />} />
