@@ -1,0 +1,64 @@
+/* Departments.css */
+
+.departments-container {
+    padding: 20px;
+  }
+  
+  .departments-header {
+    text-align: center;
+  }
+  
+  .departments-title {
+    font-size: 2rem;
+    font-weight: bold;
+  }
+  
+  .departments-subtitle {
+    font-size: 1rem;
+    margin-top: 10px;
+  }
+  
+  .departments-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 20px;
+  }
+  
+  .department-card {
+    background-color: #f4f4f4;
+    border-radius: 8px;
+    width: 250px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .department-name {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  .department-info {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+  }
+  
+  .info-icon {
+    margin-right: 5px;
+  }
+  
+  .view-button {
+    display: block;
+    margin-top: 15px;
+    text-align: center;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border-radius: 4px;
+    text-decoration: none;
+  }
+  
+  .view-button:hover {
+    background-color: #0056b3;
+  }

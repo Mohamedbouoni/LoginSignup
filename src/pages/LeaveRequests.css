@@ -1,0 +1,139 @@
+
+.leave-container {
+    padding: 40px;
+    background-color: #f4f4fc;
+    min-height: 100vh;
+    font-family: "Poppins", sans-serif;
+  }
+  
+  /* Back Button */
+  .back-button-container {
+    margin-bottom: 24px;
+  }
+  
+  .back-button {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    color: #4a00e0;
+    font-weight: 600;
+    font-size: 16px;
+    transition: color 0.3s ease;
+  }
+  
+  .back-icon {
+    margin-right: 8px;
+    font-size: 18px;
+  }
+  
+  .back-button:hover {
+    color: #3700b3;
+  }
+  
+  /* Header */
+  .leave-header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  
+  .leave-title {
+    font-size: 36px;
+    color: #4a00e0;
+    font-weight: 700;
+  }
+  
+  .leave-subtitle {
+    font-size: 16px;
+    color: #777;
+    margin-top: 8px;
+  }
+  
+  /* Table Container */
+  .leave-table-container {
+    overflow-x: auto;
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 8px 24px rgba(74, 0, 224, 0.1);
+  }
+  
+  .leave-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px;
+  }
+  
+  .leave-table th,
+  .leave-table td {
+    padding: 16px 20px;
+    text-align: left;
+  }
+  
+  .leave-table thead {
+    background-color: #4a00e0;
+    color: #fff;
+  }
+  
+  .leave-table tbody tr {
+    border-bottom: 1px solid #eee;
+    transition: background-color 0.3s ease;
+  }
+  
+  .leave-table tbody tr:hover {
+    background-color: #f9f9ff;
+  }
+  
+  /* Status Badges */
+  .status-badge {
+    padding: 6px 12px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    display: inline-block;
+  }
+  
+  .status-badge.approved {
+    background-color: #d4edda;
+    color: #155724;
+  }
+  
+  .status-badge.pending {
+    background-color: #fff3cd;
+    color: #856404;
+  }
+  
+  .status-badge.rejected {
+    background-color: #f8d7da;
+    color: #721c24;
+  }
+  
+  /* Action Buttons */
+  .action-button {
+    display: inline-flex;
+    align-items: center;
+    margin-right: 8px;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 12px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    color: #fff;
+  }
+  
+  .action-icon {
+    margin-right: 6px;
+  }
+  
+  .action-button.approve {
+    background-color: #28a745;
+  }
+  
+  .action-button.reject {
+    background-color: #dc3545;
+  }
+  
+  .action-button:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+  }
+  

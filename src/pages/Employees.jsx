@@ -1,110 +1,143 @@
-import { useState, useEffect } from 'react';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import './Employees.css';
+import { useEffect } from "react";
+
 
 const Employees = () => {
-  const [employees, setEmployees] = useState([]);
-  const [isEditing, setIsEditing] = useState(false);
-  const [currentEmployee, setCurrentEmployee] = useState(null);
+  const navigate = useNavigate();
 
+  const [employees, setEmployees] = useState(() => {
+    const savedEmployees = localStorage.getItem("employees");
+    return savedEmployees ? JSON.parse(savedEmployees) : [];
+  });
   useEffect(() => {
-    // Fetch employees from the backend API
-    const fetchEmployees = async () => {
-      try {
-        const response = await fetch('http://localhost:5000/api/employees');
-        const data = await response.json();
-        setEmployees(data);
-      } catch (error) {
-        console.error('Error fetching employee data:', error);
-      }
-    };
+    localStorage.setItem("employees", JSON.stringify(employees));
+  }, [employees]);
+  
 
-    fetchEmployees();
-  }, []);
+  const [showModal, setShowModal] = useState(false);
+  const [formData, setFormData] = useState({ name: '', position: '', department: '', status: 'Active' });
+  const [editMode, setEditMode] = useState(false);
+  const [editId, setEditId] = useState(null);
 
-  const handleEdit = (employee) => {
-    setIsEditing(true);
-    setCurrentEmployee(employee);
+  const openAddModal = () => {
+    setFormData({ name: '', position: '', department: '', status: 'Active' });
+    setEditMode(false);
+    setShowModal(true);
   };
 
-  const handleSave = async () => {
-    try {
-      const response = await fetch(`http://localhost:5000/api/employees/${currentEmployee.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(currentEmployee),
-      });
+  const openEditModal = (employee) => {
+    setFormData(employee);
+    setEditMode(true);
+    setEditId(employee.id);
+    setShowModal(true);
+  };
 
-      if (response.ok) {
-        const updatedEmployees = employees.map((emp) =>
-          emp.id === currentEmployee.id ? currentEmployee : emp
-        );
-        setEmployees(updatedEmployees);
-        setIsEditing(false);
-        setCurrentEmployee(null);
-      }
-    } catch (error) {
-      console.error('Error saving employee data:', error);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (editMode) {
+      const updatedEmployees = employees.map((emp) =>
+        emp.id === editId ? { ...formData, id: editId } : emp
+      );
+      setEmployees(updatedEmployees);
+    } else {
+      const newEmployee = {
+        id: employees.length + 1,
+        ...formData,
+      };
+      setEmployees([...employees, newEmployee]);
     }
-  };
-
-  const handleCancel = () => {
-    setIsEditing(false);
-    setCurrentEmployee(null);
+    setShowModal(false);
+    setFormData({ name: '', position: '', department: '', status: 'Active' });
+    setEditMode(false);
+    setEditId(null);
   };
 
   return (
-    <div className="employee-management">
-      <h2>Employee Management</h2>
-
-      <div className="employee-list">
-        {employees.map((employee) => (
-          <div key={employee.id} className="employee-card">
-            <h3>{employee.name}</h3>
-            <p>Department: {employee.department}</p>
-            <p>Email: {employee.email}</p>
-            <p>Phone: {employee.phone}</p>
-            <button onClick={() => handleEdit(employee)}>Edit</button>
-          </div>
-        ))}
+    <div className="employees-container">
+      <div className="back-button" onClick={() => navigate("/dashboard")}>
+        ← Back to Dashboard
       </div>
 
-      {isEditing && currentEmployee && (
-        <div className="employee-edit-form">
-          <h3>Edit Employee</h3>
-          <label>
-            Name:
-            <input
-              type="text"
-              value={currentEmployee.name}
-              onChange={(e) => setCurrentEmployee({ ...currentEmployee, name: e.target.value })}
-            />
-          </label>
-          <label>
-            Department:
-            <input
-              type="text"
-              value={currentEmployee.department}
-              onChange={(e) => setCurrentEmployee({ ...currentEmployee, department: e.target.value })}
-            />
-          </label>
-          <label>
-            Email:
-            <input
-              type="email"
-              value={currentEmployee.email}
-              onChange={(e) => setCurrentEmployee({ ...currentEmployee, email: e.target.value })}
-            />
-          </label>
-          <label>
-            Phone:
-            <input
-              type="text"
-              value={currentEmployee.phone}
-              onChange={(e) => setCurrentEmployee({ ...currentEmployee, phone: e.target.value })}
-            />
-          </label>
-          <button onClick={handleSave}>Save</button>
-          <button onClick={handleCancel}>Cancel</button>
+      <div className="header">
+        <h1>👥 Employee Management</h1>
+        <button className="add-btn" onClick={openAddModal}>+ Add Employee</button>
+      </div>
+
+      <div className="employee-card">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Position</th>
+              <th>Department</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {employees.map((emp) => (
+              <tr key={emp.id}>
+                <td>{emp.name}</td>
+                <td>{emp.position}</td>
+                <td>{emp.department}</td>
+                <td>
+                  <span className={`status ${emp.status.toLowerCase().replace(" ", "-")}`}>
+                    {emp.status}
+                  </span>
+                </td>
+                <td>
+                  <button className="edit-btn" onClick={() => openEditModal(emp)}>Edit</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {showModal && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <h2>{editMode ? "Edit Employee" : "Add New Employee"}</h2>
+            <form onSubmit={handleSubmit}>
+              <input
+                type="text"
+                placeholder="Name"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                required
+              />
+              <input
+                type="text"
+                placeholder="Position"
+                value={formData.position}
+                onChange={(e) => setFormData({ ...formData, position: e.target.value })}
+                required
+              />
+              <input
+                type="text"
+                placeholder="Department"
+                value={formData.department}
+                onChange={(e) => setFormData({ ...formData, department: e.target.value })}
+                required
+              />
+              <select
+                value={formData.status}
+                onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+              >
+                <option value="Active">Active</option>
+                <option value="On Leave">On Leave</option>
+                <option value="Inactive">Inactive</option>
+              </select>
+              <div className="modal-actions">
+                <button type="submit" className="add-btn">
+                  {editMode ? "Update" : "Add"}
+                </button>
+                <button type="button" className="cancel-btn" onClick={() => setShowModal(false)}>Cancel</button>
+              </div>
+            </form>
+          </div>
         </div>
       )}
     </div>

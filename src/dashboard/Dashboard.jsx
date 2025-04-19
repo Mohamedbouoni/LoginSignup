@@ -31,7 +31,7 @@ const Dashboard = ({ setIsAuthenticated }) => {
     if (userId) {
       const fetchUserData = async () => {
         try {
-          const response = await fetch(`http://localhost:5000/api/user/${userId}`);
+          const response = await fetch(`${process.env.REACT_APP_API_URL}/api/user/${userId}`);
           if (!response.ok) throw new Error('Failed to fetch user data');
 
           const data = await response.json();
@@ -53,7 +53,8 @@ const Dashboard = ({ setIsAuthenticated }) => {
   useEffect(() => {
     const fetchAllUsers = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/user');
+        // eslint-disable-next-line no-undef
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/user`);
         if (!response.ok) {
           throw new Error('Failed to fetch users');
         }
@@ -141,7 +142,7 @@ const Dashboard = ({ setIsAuthenticated }) => {
 
   const changeUserRole = async (userId, newRole) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/user/${userId}/role`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/user/${userId}/role`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -216,7 +217,7 @@ const Dashboard = ({ setIsAuthenticated }) => {
             <Link to="/user-profile">
               {user?.image && (
                 <img
-                  src={`http://localhost:5000/${user.image}`}
+                  src={`${process.env.REACT_APP_API_URL}/${user.image}`}
                   alt="Profile"
                   className="profile-img"
                   onClick={() => setShowModal(true)}  // Open modal on click

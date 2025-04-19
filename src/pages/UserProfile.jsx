@@ -9,7 +9,7 @@ const UserProfile = () => {
     useEffect(() => {
         const userId = localStorage.getItem("userId");
         if (userId) {
-            fetch(`http://localhost:5000/api/user/${userId}`)
+            fetch(`${process.env.REACT_APP_API_URL}/user/${userId}`)
                 .then((res) => res.json())
                 .then((data) => setUser(data))
                 .catch((error) => console.error("Error fetching user data:", error));
@@ -27,7 +27,7 @@ const UserProfile = () => {
         <div className='card-profile'>
             <h2>User Profile</h2>
             <div className='Profile'>
-                {user.image && <img src={`http://localhost:5000/${user.image}`} alt="Profile" className="profile-image" />}
+                {user.image && <img src={`${process.env.REACT_APP_API_URL}/${user.image}`} alt="Profile" className="profile-image" />}
                 <p><strong>Full Name:</strong> {user.fullname}</p>
                 <p><strong>Username:</strong> {user.username}</p>
                 <p><strong>password:</strong> {user.password}</p>

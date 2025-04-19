@@ -8,7 +8,7 @@ function Countuser() {
     useEffect(() => {
       const token = localStorage.getItem('token');
       if (token) {
-        fetch('http://localhost:5000/api/auth/logged-users', {
+        fetch(`${process.env.REACT_APP_API_URL}/api/auth/logged-users`, {
           headers: { Authorization: `Bearer ${token}` },
         })
           .then((response) => response.json())

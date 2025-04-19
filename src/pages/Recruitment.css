@@ -1,0 +1,136 @@
+
+.recruitment-container {
+    padding: 40px;
+    background-color: #f4f4fc;
+    min-height: 100vh;
+    font-family: "Poppins", sans-serif;
+  }
+  
+  /* Back Button */
+  .back-button-container {
+    margin-bottom: 24px;
+  }
+  
+  .back-button {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    color: #4a00e0;
+    font-weight: 600;
+    font-size: 16px;
+    transition: color 0.3s ease;
+  }
+  
+  .back-icon {
+    margin-right: 8px;
+    font-size: 18px;
+  }
+  
+  .back-button:hover {
+    color: #3700b3;
+  }
+  
+  /* Header */
+  .recruitment-header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  
+  .recruitment-title {
+    font-size: 36px;
+    color: #4a00e0;
+    font-weight: 700;
+  }
+  
+  .recruitment-subtitle {
+    font-size: 16px;
+    color: #777;
+    margin-top: 8px;
+  }
+  
+  /* Job Grid */
+  .job-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+  }
+  
+  /* Job Card */
+  .job-card {
+    background-color: #fff;
+    border-radius: 20px;
+    box-shadow: 0 8px 24px rgba(74, 0, 224, 0.1);
+    padding: 24px;
+    text-align: center;
+    transition: transform 0.3s ease;
+  }
+  
+  .job-card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .job-icon-container {
+    background-color: #4a00e0;
+    color: #fff;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .job-icon {
+    font-size: 28px;
+  }
+  
+  .job-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 12px;
+  }
+  
+  .job-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+    color: #555;
+  }
+  
+  .info-icon {
+    margin-right: 6px;
+    color: #4a00e0;
+  }
+  
+  /* Apply Button */
+  .apply-button {
+    margin-top: 16px;
+    background-color: #4a00e0;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 12px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+  }
+  
+  .apply-button:hover {
+    background-color: #3700b3;
+    transform: translateY(-2px);
+  }
+  
+  /* Disabled Button */
+  .apply-button.disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  
+  .apply-button.disabled:hover {
+    transform: none;
+    background-color: #ccc;
+  }
+  
