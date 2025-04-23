@@ -15,6 +15,7 @@ import Settings from './pages/Settings';
 import Countuser from './hooks/Countuser';
 import EditProfile from './hooks/EditProfile';
 import ChangePassword from './hooks/ChangePassword';
+import AddUser from './pages/AddUser';
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -55,6 +56,7 @@ function App() {
           <Route path="/edit-profile/:id" element={<ProtectedRoute isAuthenticated={isAuthenticated} element={<EditProfile setIsAuthenticated={setIsAuthenticated} />} />} />
           <Route path='/change-password/:id' element={<ProtectedRoute isAuthenticated={isAuthenticated} element={<EditProfile setIsAuthenticated={setIsAuthenticated} />} />} ></Route>
           <Route path="/employees" element={<Employees />} />
+          <Route path="/add-user" element={<AddUser />} />
         <Route path="/departments" element={<Departments />} />
         <Route path="/leave-requests" element={<LeaveRequets />} />
         <Route path="/recruitment" element={<Recruitment />} />

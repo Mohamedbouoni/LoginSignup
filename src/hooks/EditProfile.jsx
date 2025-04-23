@@ -14,7 +14,7 @@ const EditProfile = ({setIsAuthenticated}) => {
             return;
         }
 
-        fetch(`${process.env.REACT_APP_API_URL}/api/user/${userId}`)
+        fetch(`http://localhost:5000/api/user/${userId}`)
             .then((res) => res.json())
             .then((data) => setUser(data))
             .catch((error) => console.error("Error fetching user:", error));
