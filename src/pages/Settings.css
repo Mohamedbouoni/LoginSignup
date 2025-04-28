@@ -1,7 +1,7 @@
 /* Global Dark Mode (optional) */
 body.dark {
     background-color: #121212;
-    color: #f0f0f0;
+
   }
   
   .settings-container {
@@ -289,4 +289,6 @@ body.dark {
   .settings-container.dark-mode .cancel-button:hover {
     background-color: #555;
   }
-  
+  .card-profile.dark-mode {
+    background-color: #242424;
+  } 

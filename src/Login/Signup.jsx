@@ -37,7 +37,7 @@ const Signup = () => {
       formDataToSend.append('password', formData.password);
       if (formData.image) formDataToSend.append('image', formData.image);
 
-      const response = await fetch('http://localhost:5000/api/auth/signup', {
+      const response = await fetch('http://localhost:5000/api/user/signup', {
         method: 'POST',
         body: formDataToSend,
       });

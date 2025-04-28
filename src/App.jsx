@@ -11,8 +11,6 @@ import Departments from './pages/Departments';
 import Employees from './pages/Employees';
 import LeaveRequets from './pages/LeaveRequets';
 import Recruitment from './pages/Recruitment';
-import Settings from './pages/Settings';
-import Countuser from './hooks/Countuser';
 import EditProfile from './hooks/EditProfile';
 import ChangePassword from './hooks/ChangePassword';
 import AddUser from './pages/AddUser';
@@ -54,13 +52,12 @@ function App() {
           {/* Dynamic user profile route */}
           <Route path="/user-profile" element={<UserProfile />/*,<Countuser/>*/} />
           <Route path="/edit-profile/:id" element={<ProtectedRoute isAuthenticated={isAuthenticated} element={<EditProfile setIsAuthenticated={setIsAuthenticated} />} />} />
-          <Route path='/change-password/:id' element={<ProtectedRoute isAuthenticated={isAuthenticated} element={<EditProfile setIsAuthenticated={setIsAuthenticated} />} />} ></Route>
+          <Route path='/change-password/:id' element={<ProtectedRoute isAuthenticated={isAuthenticated} element={<ChangePassword setIsAuthenticated={setIsAuthenticated} />} />} ></Route>
           <Route path="/employees" element={<Employees />} />
           <Route path="/add-user" element={<AddUser />} />
         <Route path="/departments" element={<Departments />} />
         <Route path="/leave-requests" element={<LeaveRequets />} />
         <Route path="/recruitment" element={<Recruitment />} />
-        <Route path="/settings" element={<Settings />} />
 
           {/* Catch all unmatched routes */}
           <Route path="*" element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} />} />

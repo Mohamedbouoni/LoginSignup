@@ -8,6 +8,10 @@ import './style.css';
 import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTachometerAlt, faUsers, faBuilding, faCalendarAlt, faUser, faCog, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { LineChart, Cell, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { faUserShield, faUserTie, faUser as faUserIcon } from '@fortawesome/free-solid-svg-icons';
+import axios from 'axios';
+import { FaUserShield, FaUserTie, FaUser } from 'react-icons/fa'; // Importing icons
 
 
 const Dashboard = ({ setIsAuthenticated }) => {
@@ -22,7 +26,24 @@ const Dashboard = ({ setIsAuthenticated }) => {
     admin: 0,
     recruiter: 0
   });
+  const [roleStats, setRoleStats] = useState([]);
 
+  useEffect(() => {
+    const fetchRoleStats = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/signup-stats');
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();
+        setRoleStats(data);
+      } catch (error) {
+        console.error('Error fetching role stats:', error);
+      }
+    };
+
+    fetchRoleStats();
+  }, []);
 
   useEffect(() => {
     const userId = localStorage.getItem("userId");
@@ -63,7 +84,7 @@ const Dashboard = ({ setIsAuthenticated }) => {
         console.error('Error fetching users:', error);
       }
     };
-  
+
     fetchAllUsers();
   }, []);
 
@@ -82,11 +103,11 @@ const Dashboard = ({ setIsAuthenticated }) => {
       countRoles(); // Call the function when users are fetched
     }
   }, [allUsers]);
-  
 
-  
-  
-  
+
+
+
+
 
 
   const toggleNav = () => {
@@ -168,17 +189,100 @@ const Dashboard = ({ setIsAuthenticated }) => {
 
   const navItems = [
     { name: 'Dashboard', icon: faTachometerAlt, route: '/' },
-    { name: 'Add User', icon: faUser, route: '/add-user', roles: ['admin'] }, 
+    { name: 'Add User', icon: faUser, route: '/add-user', roles: ['admin'] },
     { name: 'Employees', icon: faUsers, route: '/employees', roles: ['admin', 'recruiter'] },
     { name: 'Recruitment', icon: faUser, route: '/recruitment', roles: ['admin', 'recruiter'] },
     { name: 'Departments', icon: faBuilding, route: '/departments' },
     { name: 'Leave Requests', icon: faCalendarAlt, route: '/leave-requests' },
-    { name: 'Settings', icon: faCog, route: '/settings' },
     { name: 'Logout', icon: faSignOutAlt, route: '/login', onClick: handleLogout }
   ];
+  const handleEdit = () => {
+    navigate(`/user-profile`);
+  }
 
   // Filter items based on user role
   const filteredNavItems = navItems.filter(item => !item.roles || item.roles.includes(role));
+
+  const handleDelete = async (userId, username) => {
+    const confirmDelete = window.confirm(`Are you sure you want to delete user "${username}"?`);
+
+    if (!confirmDelete) return;
+
+    try {
+      const response = await fetch(`http://localhost:5000/api/user/${userId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}` // If token is needed
+        }
+      });
+
+      if (response.ok) {
+        toast.success("User deleted successfully");
+        setAllUsers(prevUsers => prevUsers.filter(user => user._id !== userId)); // Remove from UI
+      } else {
+        const errorData = await response.json();
+        toast.error(`Failed to delete user: ${errorData.message || "Unknown error"}`);
+      }
+    } catch (error) {
+      toast.error("Error deleting user");
+      console.error("Delete error:", error);
+    }
+  };
+
+  const roleStyles = {
+    admin: {
+      color: '#e63946',
+      icon: faUserShield
+    },
+    recruiter: {
+      color: '#ffb703',
+      icon: faUserTie
+    },
+    user: {
+      color: '#219ebc',
+      icon: faUserIcon
+    }
+  };
+
+  const [employees, setEmployees] = useState([]);
+
+  useEffect(() => {
+    const savedEmployees = JSON.parse(localStorage.getItem("employees"));
+    if (savedEmployees) {
+      setEmployees(savedEmployees);
+    }
+  }, []);
+
+  const handleRoleChange = async (userId, newRole) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/user/change-role/${userId}`, {   // Use your correct API route
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ role: newRole })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update role');
+      }
+
+      const data = await response.json();
+      console.log('Role updated:', data);
+
+      // Update the user in the local state (optional for faster UI)
+      setAllUsers((prevUsers) =>
+        prevUsers.map((user) =>
+          user._id === userId ? { ...user, role: newRole } : user
+        )
+      );
+    } catch (error) {
+      console.error('Error updating role:', error);
+      alert('Failed to update role');
+    }
+  };
+
+
   return (
     <>
       <header>
@@ -262,15 +366,58 @@ const Dashboard = ({ setIsAuthenticated }) => {
             </div>
           </div>
 
-
           <div className="box-container">
-          {['admin', 'recruiter', 'user'].map((role, index) => (
-          <div className="box" key={index}>
-            <h2>Total {role.charAt(0).toUpperCase() + role.slice(1)}s</h2>
-            <p>{roleCounts[role] ?? 0}</p> {/* Shows 0 if no users of that role */}
+            {['admin', 'recruiter', 'user'].map((role, index) => {
+              const colors = [
+                'linear-gradient(to bottom, #1da256, #48d483)', // Admin
+                'linear-gradient(to bottom, #007bff, #00c6ff)', // Recruiter
+                'linear-gradient(to bottom, #ff7f50, #ffb347)'  // User
+              ];
+
+              const icons = {
+                admin: <FaUserShield size={30} color="white" />,
+                recruiter: <FaUserTie size={30} color="white" />,
+                user: <FaUser size={30} color="white" />
+              };
+
+              return (
+                <div
+                  className="box"
+                  key={index}
+                  style={{ background: colors[index] }}
+                >
+                  <div className="box-content">
+                    {icons[role]}
+                    <div>
+                      <h2>Total {role.charAt(0).toUpperCase() + role.slice(1)}s</h2>
+                      <p>{roleCounts[role] ?? 0}</p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
-        ))}
+          <div className="chart-container">
+            <h2>User Role Statistics Over Time</h2>
+            <ResponsiveContainer width="100%" height={250}>
+              <BarChart
+                data={roleStats}
+                margin={{ top: 20, right: 30, left: 0, bottom: 5 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="admin" fill="#4f46e5" />
+                <Bar dataKey="user" fill="#6ee7b7" />
+                <Bar dataKey="recruiter" fill="#f59e0b" />
+              </BarChart>
+            </ResponsiveContainer>
+
           </div>
+
+
 
           <div className="report-container">
             <div className="report-header">
@@ -282,17 +429,39 @@ const Dashboard = ({ setIsAuthenticated }) => {
 
             <div className="report-body">
               <div className="report-topic-heading">
-              {['Username', 'Role'].map((heading, index) => (
+                {['Username', 'Role'].map((heading, index) => (
                   <h3 className="t-op" key={index}>{heading}</h3>
                 ))}
 
+
               </div>
               <div className="items">
-              {allUsers.map((userItem, index) => (
+                {allUsers.map((userItem, index) => (
                   <div className="item1" key={index}>
                     <h3 className="t-op-nextlvl">{userItem.username}</h3>
-                    <h3 className="label-tag">{userItem.role}</h3>
-                  </div>
+                    <button
+                      className='btn-delete'
+                      onClick={() => handleDelete(userItem._id, userItem.username)}
+                    >
+                      Delete
+                    </button>
+                    <div className="role-select-container">
+                      <div className={`label-tag ${userItem.role}`}>
+                        <FontAwesomeIcon icon={roleStyles[userItem.role]?.icon} className="fa-icon" />
+                        {userItem.role}
+                      </div>
+                      <select
+                        value={userItem.role}
+                        onChange={(e) => handleRoleChange(userItem._id, e.target.value)}
+                        className="role-select"
+                      >
+                        {['user', 'admin', 'recruiter'].map((roleOption) => (
+                          <option key={roleOption} value={roleOption}>
+                            {roleOption}
+                          </option>
+                        ))}
+                      </select>
+                    </div>                  </div>
                 ))}
               </div>
             </div>
